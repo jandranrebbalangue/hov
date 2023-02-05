@@ -30,7 +30,7 @@ const eventsSchema = new Schema<events>({
 });
 
 // 3. Create a Model.
-export const UserModel = model<events>("Account", eventsSchema);
+export const EventModel = model<events>("Events", eventsSchema);
 mongoConnect().catch((err) => console.log(err));
 
 export async function mongoConnect(): Promise<void> {

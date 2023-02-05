@@ -6,7 +6,7 @@ import { AccountEvents, AggregateType } from "../../../events";
 import EventStore from "../../src/library/eventstore";
 import { expect } from "chai";
 import { AccountState } from "../../src/aggregate/account";
-import { mongoConnect, mongoDisconnect, UserModel } from "../../../db";
+import { EventModel } from "../../../db";
 import {
   calculateAccountBalance,
   getAccountInformation,
@@ -20,22 +20,22 @@ async function findById(id: string): Promise<{
 } | null> {
   // TODO: Implement this function to retrieve the account information by account id.
   const account = {};
-  const events = await UserModel.find({ aggregateId: id }).exec();
-  const accountWithdrawal = await UserModel.findOne({
+  const events = await EventModel.find({ aggregateId: id }).exec();
+  const accountWithdrawal = await EventModel.findOne({
     type: "WithdrawalCreated",
     "body.account": id,
   });
-  const accountDeposited = await UserModel.findOne({
+  const accountDeposited = await EventModel.findOne({
     type: "DepositCreated",
     "body.account": id,
   });
 
-  const accountWithdrawalApproved = await UserModel.findOne({
+  const accountWithdrawalApproved = await EventModel.findOne({
     aggregateId: accountWithdrawal?.aggregateId,
     type: "WithdrawalApproved",
   });
 
-  const accountDepositApproved = await UserModel.findOne({
+  const accountDepositApproved = await EventModel.findOne({
     aggregateId: accountDeposited?.aggregateId,
     type: "DepositApproved",
   });
@@ -67,7 +67,7 @@ async function findById(id: string): Promise<{
 describe("AccountProjection", function() {
   describe("#start", function() {
     before(async function() {
-      await UserModel.deleteMany({});
+      await EventModel.deleteMany({});
       this.eventStore = new EventStore(AccountEvents);
       this.projection = new AccountProjection(this.eventStore);
       this.aggregateId = "60329145-ba86-44fb-8fc8-519e1e427a60";

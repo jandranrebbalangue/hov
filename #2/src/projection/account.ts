@@ -1,4 +1,4 @@
-import { UserModel } from "../../../db";
+import { EventModel } from "../../../db";
 import { AggregateType, Event } from "../../../events";
 import EventStore from "../library/eventstore";
 import Projection from "../library/projection";
@@ -13,7 +13,7 @@ export default class AccountProjection extends Projection {
   }
 
   protected async apply(event: Event) {
-    const data = new UserModel({ ...event });
+    const data = new EventModel({ ...event });
     await data.save();
     // TODO: Implement this method, to maintain a state in your database.
     // You can choose any database of your own, but suggested is MongoDB.
