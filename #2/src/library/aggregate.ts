@@ -1,5 +1,5 @@
-import { AggregateType, Event } from '../../../events';
-import EventStore from './eventstore';
+import { AggregateType, Event } from "../../../events";
+import EventStore from "./eventstore";
 
 /**
  * Aggregates controls the business logic of the domain. It consumes events on the eventstore
@@ -18,10 +18,13 @@ export default abstract class Aggregate<T> {
   }
 
   /**
-   * Fold processes all the events on the eventstore 
+   * Fold processes all the events on the eventstore
    */
   protected fold() {
-    for (const event of this.eventStore.getEvents({ aggregateId: this.id, afterVersion: this.version })) {
+    for (const event of this.eventStore.getEvents({
+      aggregateId: this.id,
+      afterVersion: this.version,
+    })) {
       this._state = this.apply(event);
       this.version = event.version;
     }
@@ -35,10 +38,7 @@ export default abstract class Aggregate<T> {
 
   protected abstract apply(event: Event): T;
 
-  protected createEvent(
-    type: string,
-    body: any,
-  ) {
+  protected createEvent(type: string, body: any) {
     this.fold();
     const event = {
       aggregateId: this.id,
