@@ -13,8 +13,7 @@ export default class AccountProjection extends Projection {
   }
 
   protected async apply(event: Event) {
-    const { ...rest } = event;
-    const data = new UserModel({ ...rest });
+    const data = new UserModel({ ...event });
     await data.save();
     // TODO: Implement this method, to maintain a state in your database.
     // You can choose any database of your own, but suggested is MongoDB.
